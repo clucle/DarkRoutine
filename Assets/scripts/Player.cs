@@ -7,7 +7,7 @@ public class Player : MonoBehaviour {
     private float speed;
 
     // Sprite
-    private bool is_black;//black true white false;
+    private bool isBlack;//black true white false;
     public Sprite Black_back;
     public Sprite White_back;
     public Sprite Black_ch;
@@ -23,7 +23,7 @@ public class Player : MonoBehaviour {
         speed = 3;
 
         // Init sprite
-        is_black = true;
+        isBlack = true;
         background.GetComponent<SpriteRenderer>().sprite = Black_back;
         this.gameObject.GetComponent<SpriteRenderer>().sprite = Black_ch;
 
@@ -46,17 +46,30 @@ public class Player : MonoBehaviour {
 
     private void ChangeColor()
     {
-        if(is_black == true)
+        if(isBlack == true)
         {
             background.GetComponent<SpriteRenderer>().sprite = White_back;
             this.gameObject.GetComponent<SpriteRenderer>().sprite = White_ch;
-            is_black = false;
+            isBlack = false;
         }
         else
         {
             background.GetComponent<SpriteRenderer>().sprite = Black_back;
             this.gameObject.GetComponent<SpriteRenderer>().sprite = Black_ch;
-            is_black = true;
+            isBlack = true;
         }
     }
+    void OnTriggerEnter2D(Collider2D other)
+    {
+        string En_color = "";
+        if (isBlack == true) En_color = "En_black";
+        else if(isBlack == false) En_color = "En_white";
+
+        if (other.gameObject.tag != En_color) // diffent with me and collider
+        {
+            ChangeColor();
+        }
+        
+    }
+
 }
