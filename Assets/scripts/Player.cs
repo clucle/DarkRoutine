@@ -64,7 +64,7 @@ public class Player : MonoBehaviour {
         string En_color = "";
         if (isBlack == true) En_color = "En_black";
         else if(isBlack == false) En_color = "En_white";
-
+       
         if (other.gameObject.tag != En_color) // diffent with me and collider
         {
             ChangeColor();
