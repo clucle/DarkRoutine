@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 
 public class Player : MonoBehaviour {
@@ -15,10 +16,20 @@ public class Player : MonoBehaviour {
 
     public GameObject background;
 
+    public Text text_distance;
+    public Text text_score;
+
+    private bool limit_key;
 
 	// Use this for initialization
+    public void Set_limit_key (bool islimit)
+    {
+        limit_key = islimit;
+    }
+
 	void Start () {
         // Init ch
+        limit_key = true;
         rbody = GetComponent<Rigidbody2D>();
         speed = 3;
 
@@ -27,17 +38,21 @@ public class Player : MonoBehaviour {
         background.GetComponent<SpriteRenderer>().sprite = Black_back;
         this.gameObject.GetComponent<SpriteRenderer>().sprite = Black_ch;
 
+        
+
     }
 	
 	// Update is called once per frame
 	void Update () {
-        float horizontal = Input.GetAxis("Horizontal");
-        h_movement(horizontal);
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            ChangeColor();
+        if (!limit_key) {
+            float horizontal = Input.GetAxis("Horizontal");
+            h_movement(horizontal);
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                ChangeColor();
+            }
         }
-	}
+    }
 
     private void h_movement(float horizontal)
     {
@@ -50,12 +65,16 @@ public class Player : MonoBehaviour {
         {
             background.GetComponent<SpriteRenderer>().sprite = White_back;
             this.gameObject.GetComponent<SpriteRenderer>().sprite = White_ch;
+            text_distance.color = Color.black;
+            text_score.color = Color.black;
             isBlack = false;
         }
         else
         {
             background.GetComponent<SpriteRenderer>().sprite = Black_back;
             this.gameObject.GetComponent<SpriteRenderer>().sprite = Black_ch;
+            text_distance.color = Color.white;
+            text_score.color = Color.white;
             isBlack = true;
         }
     }

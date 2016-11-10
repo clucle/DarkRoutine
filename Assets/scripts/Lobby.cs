@@ -2,6 +2,9 @@
 using System.Collections;
 
 public class Lobby : MonoBehaviour {
+    public GameObject ui_Ingame;
+    public GameObject player;
+
     public void Button_Click()
     {
         FadeMe();
@@ -21,6 +24,12 @@ public class Lobby : MonoBehaviour {
         }
         canvasGroup.interactable = false;
         yield return null;
+
+        
+        ui_Ingame.SetActive(true);
+        ui_Ingame.gameObject.GetComponent<ingame>().On_Click();
+        player.gameObject.GetComponent<Player>().Set_limit_key(false);
+
         Debug.Log("End!");
     }
 }
