@@ -3,8 +3,9 @@ using System.Collections;
 
 public class pattern : MonoBehaviour {
     public GameObject whitePrefab = null;
-	// Use this for initialization
-	void Start () {
+    public GameObject blackPrefab = null;
+    // Use this for initialization
+    void Start () {
 	
 	}
 	
@@ -12,7 +13,8 @@ public class pattern : MonoBehaviour {
 	void Update () {
         if (Input.anyKeyDown)
         {
-            Instantiate(whitePrefab);
+            Instantiate(whitePrefab, new Vector3(-2f, 5f, 0), Quaternion.identity);
+            Instantiate(blackPrefab, new Vector3(2f, 5f, 0), Quaternion.identity);
         }
 	}
 }

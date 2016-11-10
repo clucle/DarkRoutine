@@ -67,7 +67,7 @@ public class Player : MonoBehaviour {
        
         if (other.gameObject.tag != En_color) // diffent with me and collider
         {
-            Debug.Log("A");
+            //Debug.Log("A");
             ChangeColor();
         }
         
