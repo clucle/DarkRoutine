@@ -5,6 +5,7 @@ using System.Collections;
 public class Player : MonoBehaviour {
     // Character declare
     private Rigidbody2D rbody;
+    private Transform tform;
     private float speed;
 
     // Sprite
@@ -31,6 +32,7 @@ public class Player : MonoBehaviour {
         // Init ch
         limit_key = true;
         rbody = GetComponent<Rigidbody2D>();
+        tform = GetComponent<Transform>();
         speed = 3;
 
         // Init sprite
@@ -56,6 +58,18 @@ public class Player : MonoBehaviour {
 
     private void h_movement(float horizontal)
     {
+        if (tform.transform.position.x < -2.23)
+        {
+            Vector3 v = transform.position;
+            v.x = -2.23f;
+            tform.transform.position = v;
+        }
+        if (tform.transform.position.x > 2.23)
+        {
+            Vector3 v = transform.position;
+            v.x = 2.23f;
+            tform.transform.position = v;
+        }
         rbody.velocity = new Vector2(horizontal * speed, rbody.velocity.y);
     }
 
