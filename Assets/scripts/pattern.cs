@@ -22,16 +22,102 @@ void Update () {
 public class pattern : MonoBehaviour {
     public GameObject whitePrefab = null;
     public GameObject blackPrefab = null;
+    private IEnumerator coroutine;
 
     public void DoPattern1()
+    {
+        // just random spawn
+        float check_is_black = Random.Range(0.0f, 1.0f);
+        bool is_black = (check_is_black < 0.5f) ? true : false;
+        float x_transform = Random.Range(-1.8f, 1.8f);
+        SpawnTime(is_black, x_transform, 0);
+    }
+
+    public void DoPattern2(float delay)
+    {
+        // 1 row
+        float check_is_black = Random.Range(0.0f, 1.0f);
+        bool is_black = (check_is_black < 0.5f) ? true : false;
+        for(int index = 0; index < 3; index++)
+        {
+            SpawnTime(is_black, -1.8f + index * 1.8f, 0);
+        }  
+    }
+
+    public void DoPattern3()
+    {
+        float check_is_black = Random.Range(0.0f, 1.0f);
+        bool is_black = (check_is_black < 0.5f) ? true : false;
+        for (int index = 0; index < 3; index++)
+        {
+            SpawnTime(is_black, -1.8f + index * 1.8f, index * 0.6f);
+        }
+    }
+
+    public void DoPattern4()
+    {
+        float check_is_black = Random.Range(0.0f, 1.0f);
+        bool is_black = (check_is_black < 0.5f) ? true : false;
+        for (int index = 0; index < 3; index++)
+        {
+            SpawnTime(is_black, +1.8f + -1f * index * 1.8f, index * 0.6f);
+        }
+    }
+    public void DoPattern5()
     {
         float check_is_black = Random.Range(0.0f, 1.0f);
         bool is_black = (check_is_black < 0.5f) ? true : false;
 
-        float x_transcorm = Random.Range(-1.8f, 1.8f);
+        float check_is_left = Random.Range(0.0f, 1.0f);
+        bool is_left = (check_is_left < 0.5f) ? true : false;
 
-        if(is_black) Instantiate(whitePrefab, new Vector3(x_transcorm, 5f, 0), Quaternion.identity);
-        else Instantiate(blackPrefab, new Vector3(x_transcorm, 5f, 0), Quaternion.identity);
+        float x;
+        if (is_left) x = -1.8f;
+        else x = 1.8f; 
+        for (int index = 0; index < 100; index++)
+        {
+            SpawnTime(is_black, x, index * 0.2f);
+        }
     }
+    public void DoPattern6()
+    {
+        float check_is_left = Random.Range(0.0f, 1.0f);
+        bool is_left = (check_is_left < 0.5f) ? true : false;
+
+        float x;
+        if (is_left) x = -1.8f;
+        else x = 1.8f;
+
+        float check_is_black = Random.Range(0.0f, 1.0f);
+        bool is_black = (check_is_black < 0.5f) ? true : false;
+        for (int index = 0; index < 100; index++)
+        {
+            SpawnTime(is_black, x, index * 0.2f);
+        }
+    }
+    private void SpawnTime(bool is_black, float x, float delay)
+    {
+        if (is_black)
+        {
+            coroutine = SpawnWhite(x, delay);
+            StartCoroutine(coroutine);
+        }
+        else
+        {
+            coroutine = SpawnBlack(x, delay);
+            StartCoroutine(coroutine);
+        }
+    }
+    private IEnumerator SpawnWhite(float x, float waitTime)
+    {
+        yield return new WaitForSeconds(waitTime);
+        Instantiate(whitePrefab, new Vector3(x, 5f, 0), Quaternion.identity);
+    }
+    private IEnumerator SpawnBlack(float x, float waitTime)
+    {
+        yield return new WaitForSeconds(waitTime);
+        Instantiate(blackPrefab, new Vector3(x, 5f, 0), Quaternion.identity);
+    }
+    
 }
 
