@@ -40,8 +40,6 @@ public class Player : MonoBehaviour {
         background.GetComponent<SpriteRenderer>().sprite = Black_back;
         this.gameObject.GetComponent<SpriteRenderer>().sprite = Black_ch;
 
-        
-
     }
 	
 	// Update is called once per frame
@@ -100,8 +98,19 @@ public class Player : MonoBehaviour {
        
         if (other.gameObject.tag != En_color) // diffent with me and collider
         {
+            foreach(GameObject wpf in GameObject.FindGameObjectsWithTag("En_white"))
+            {
+                Destroy(wpf);
+            }
+            foreach (GameObject bpf in GameObject.FindGameObjectsWithTag("En_black"))
+            {
+                Destroy(bpf);
+            }
+
             //Debug.Log("A");
-            ChangeColor();
+            //ChangeColor();
+
+            //foreach(GameObject Enem in pre)
         }
         
     }

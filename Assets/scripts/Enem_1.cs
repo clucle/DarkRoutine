@@ -20,4 +20,8 @@ public class Enem_1 : MonoBehaviour {
             Destroy(this.gameObject);
         }
     }
+    public void DestroyPrefab()
+    {
+        Destroy(this.gameObject);
+    }
 }
