@@ -1,15 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections;
-using UnityEngine.UI;
 
-public class Lobby : MonoBehaviour {
-    public GameObject ui_Ingame;
-    public GameObject player;
-    public void Button_Click()
+public class End : MonoBehaviour {
+    public GameObject ui_Lobby;
+    public void On_Click()
     {
-        FadeMe();
+        FadeOutMe();
     }
-
     public void init()
     {
         FadeInMe();
@@ -26,30 +23,26 @@ public class Lobby : MonoBehaviour {
             canvasGroup.alpha += Time.deltaTime * 1;
             yield return null;
         }
-        
-        
     }
 
-    public void FadeMe()
+    public void FadeOutMe()
     {
-        StartCoroutine(DoFade());
+        StartCoroutine(DoFadeOut());
     }
-    IEnumerator DoFade()
+    IEnumerator DoFadeOut()
     {
         CanvasGroup canvasGroup = GetComponent<CanvasGroup>();
         while (canvasGroup.alpha > 0)
         {
-            canvasGroup.alpha -= Time.deltaTime * 2;
-            
+            canvasGroup.alpha -= Time.deltaTime * 1;
             yield return null;
         }
-        yield return null;
-        player.gameObject.GetComponent<Player>().Set_limit_key(false);
-        player.gameObject.GetComponent<Player>().init();
-        ui_Ingame.SetActive(true);
-        ui_Ingame.gameObject.GetComponent<ingame>().On_Click();
+
+        ui_Lobby.SetActive(true);
+        ui_Lobby.gameObject.GetComponent<Lobby>().init();
         
 
         gameObject.SetActive(false);
     }
+
 }

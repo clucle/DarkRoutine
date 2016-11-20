@@ -8,6 +8,7 @@ public class ingame : MonoBehaviour {
     public GameObject pattern_obj = null;
 
     public Text text_score;
+    public Text best_score;
     private float pattern1;
     private int pattern2;
     private int pattern34;
@@ -15,8 +16,16 @@ public class ingame : MonoBehaviour {
     private pattern spawning;
 
 
+    public GameObject player;
+    private Transform tform;
+    public bool isgameover;
+
+    public GameObject ui_End;
+
     void init()
     {
+        isgameover = false;
+        
         game_score = 0;
         pattern1 = 0.5f; // just random
         pattern2 = 2;
@@ -24,16 +33,14 @@ public class ingame : MonoBehaviour {
         pattern34 = 5;
         pattern56 = 20;
         spawning = pattern_obj.gameObject.GetComponent<pattern>();
+        spawning.GameOver(false);
+        tform = player.GetComponent<Transform>();
     }
 
     public void On_Click()
     {
         init();
-
-        
-
         FadeInMe();
-        Debug.Log("Start!");
     }
     public void FadeInMe()
     {
@@ -48,40 +55,74 @@ public class ingame : MonoBehaviour {
             yield return null;
         }
 
-        Debug.Log("End!");
     }
 
     void Update()
     {
-        game_score += Time.deltaTime * 1;
-        text_score.text = game_score.ToString("#0.00");
-        
-        if (pattern1 < game_score)
+        if (!isgameover)
         {
-            pattern1++;
-            spawning.DoPattern1();
-        }
-        if (pattern2 < game_score)
-        {
-            pattern2 += 2;
-            spawning.DoPattern2(0);
-        }
-        if (pattern34 < game_score)
-        {
-            pattern34 += 5;
-            float check_is_rand = Random.Range(0.0f, 1.0f);
-            bool is_rand = (check_is_rand < 0.5f) ? true : false;
-            if (is_rand) spawning.DoPattern3();
-            else spawning.DoPattern4();
-        }
-        if (pattern56 < game_score)
-        {
-            pattern56 += 20;
-            float check_is_rand = Random.Range(0.0f, 1.0f);
-            bool is_rand = (check_is_rand < 0.5f) ? true : false;
-            if (is_rand) spawning.DoPattern5();
-            else spawning.DoPattern6();
+            game_score += Time.deltaTime * 1;
+            text_score.text = game_score.ToString("#0.00");
+
+            if (pattern1 < game_score)
+            {
+                pattern1++;
+                spawning.DoPattern1();
+            }
+            if (pattern2 < game_score)
+            {
+                pattern2 += 2;
+                spawning.DoPattern2(0);
+            }
+            if (pattern34 < game_score)
+            {
+                pattern34 += 5;
+                float check_is_rand = Random.Range(0.0f, 1.0f);
+                bool is_rand = (check_is_rand < 0.5f) ? true : false;
+                if (is_rand) spawning.DoPattern3();
+                else spawning.DoPattern4();
+            }
+            if (pattern56 < game_score)
+            {
+                pattern56 += 20;
+                float check_is_rand = Random.Range(0.0f, 1.0f);
+                bool is_rand = (check_is_rand < 0.5f) ? true : false;
+                if (is_rand) spawning.DoPattern5();
+                else spawning.DoPattern6();
+            }
         }
     }
+    public void GameOver()
+    {
+        isgameover = true;
+        spawning.GameOver(true);
+        game_score -= Time.deltaTime * 1;
+        FadeOutMe();
+    }
+
+    public void FadeOutMe()
+    {
+        StartCoroutine(DoFadeOut());
+    }
+    IEnumerator DoFadeOut()
+    {
+        player.gameObject.GetComponent<Player>().Set_limit_key(true);
+        CanvasGroup canvasGroup = GetComponent<CanvasGroup>();
+        while (canvasGroup.alpha > 0)
+        {
+            Vector3 v = player.transform.position;
+            v.x = (tform.transform.position.x * 95 / 100);
+            tform.transform.position = v;
+
+            canvasGroup.alpha -= Time.deltaTime * 1;
+            yield return null;
+        }
+
+        ui_End.SetActive(true);
+        ui_End.gameObject.GetComponent<End>().init();
+
+        gameObject.SetActive(false);
+    }
+
 }
 

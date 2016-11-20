@@ -22,6 +22,13 @@ void Update () {
 public class pattern : MonoBehaviour {
     public GameObject whitePrefab = null;
     public GameObject blackPrefab = null;
+
+    private bool isgmaeover;
+    public void GameOver(bool isover)
+    {
+        isgmaeover = isover;
+    }
+
     private IEnumerator coroutine;
 
     public void DoPattern1()
@@ -111,12 +118,13 @@ public class pattern : MonoBehaviour {
     private IEnumerator SpawnWhite(float x, float waitTime)
     {
         yield return new WaitForSeconds(waitTime);
-        Instantiate(whitePrefab, new Vector3(x, 5f, 0), Quaternion.identity);
+        //if(pattern_obj.gameObject.GetComponent<ingame>();)
+        if(!isgmaeover) Instantiate(whitePrefab, new Vector3(x, 5f, 0), Quaternion.identity);
     }
     private IEnumerator SpawnBlack(float x, float waitTime)
     {
         yield return new WaitForSeconds(waitTime);
-        Instantiate(blackPrefab, new Vector3(x, 5f, 0), Quaternion.identity);
+        if (!isgmaeover) Instantiate(blackPrefab, new Vector3(x, 5f, 0), Quaternion.identity);
     }
     
 }

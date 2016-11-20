@@ -66,6 +66,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\scripts\End.cs" />
     <Compile Include="Assets\scripts\Enem_1.cs" />
     <Compile Include="Assets\scripts\Lobby.cs" />
     <Compile Include="Assets\scripts\Player.cs" />

@@ -15,16 +15,29 @@ public class Player : MonoBehaviour {
     public Sprite Black_ch;
     public Sprite White_ch;
 
+
     public GameObject background;
 
     public Text text_distance;
     public Text text_score;
+    public Text best_score;
+
+    public GameObject ui_Ingame;
+    private ingame ingameover;
+    private bool b_isgameover;
 
     private bool limit_key;
 
-	// Use this for initialization
+    // Use this for initialization
+    public void init() {
+        b_isgameover = false;
+    }
+
+    
     public void Set_limit_key (bool islimit)
     {
+        //Debug.Log(islimit);
+        
         limit_key = islimit;
     }
 
@@ -34,23 +47,30 @@ public class Player : MonoBehaviour {
         rbody = GetComponent<Rigidbody2D>();
         tform = GetComponent<Transform>();
         speed = 3;
-
+        b_isgameover = false;
         // Init sprite
         isBlack = true;
         background.GetComponent<SpriteRenderer>().sprite = Black_back;
         this.gameObject.GetComponent<SpriteRenderer>().sprite = Black_ch;
 
+        ingameover = ui_Ingame.gameObject.GetComponent<ingame>();
+
     }
 	
 	// Update is called once per frame
 	void Update () {
-        if (!limit_key) {
+        if (!limit_key && !b_isgameover) {
             float horizontal = Input.GetAxis("Horizontal");
             h_movement(horizontal);
             if (Input.GetKeyDown(KeyCode.Space))
             {
                 ChangeColor();
             }
+        }
+        if (b_isgameover)
+        {
+            float horizontal = 0;
+            h_movement(horizontal);
         }
     }
 
@@ -68,7 +88,14 @@ public class Player : MonoBehaviour {
             v.x = 2.23f;
             tform.transform.position = v;
         }
-        rbody.velocity = new Vector2(horizontal * speed, rbody.velocity.y);
+        if (!b_isgameover)
+        {
+            rbody.velocity = new Vector2(horizontal * speed, rbody.velocity.y);
+        }else
+        {
+            rbody.velocity = new Vector2(0, rbody.velocity.y);
+        }
+        
     }
 
     private void ChangeColor()
@@ -79,6 +106,7 @@ public class Player : MonoBehaviour {
             this.gameObject.GetComponent<SpriteRenderer>().sprite = White_ch;
             text_distance.color = Color.black;
             text_score.color = Color.black;
+            best_score.color = Color.black;
             isBlack = false;
         }
         else
@@ -87,6 +115,7 @@ public class Player : MonoBehaviour {
             this.gameObject.GetComponent<SpriteRenderer>().sprite = Black_ch;
             text_distance.color = Color.white;
             text_score.color = Color.white;
+            best_score.color = Color.white;
             isBlack = true;
         }
     }
@@ -106,10 +135,12 @@ public class Player : MonoBehaviour {
             {
                 Destroy(bpf);
             }
-
+            if (!isBlack) ChangeColor();
+            b_isgameover = true;
+            ingameover.GameOver();
             //Debug.Log("A");
             //ChangeColor();
-
+            
             //foreach(GameObject Enem in pre)
         }
         
