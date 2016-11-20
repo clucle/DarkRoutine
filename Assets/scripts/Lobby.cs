@@ -5,14 +5,17 @@ using UnityEngine.UI;
 public class Lobby : MonoBehaviour {
     public GameObject ui_Ingame;
     public GameObject player;
+    public Button Start;
     public void Button_Click()
     {
         FadeMe();
+        Start.interactable = false;
     }
 
     public void init()
     {
         FadeInMe();
+        Start.interactable = false;
     }
     public void FadeInMe()
     {
@@ -26,8 +29,8 @@ public class Lobby : MonoBehaviour {
             canvasGroup.alpha += Time.deltaTime * 1;
             yield return null;
         }
-        
-        
+        Start.interactable = true;
+
     }
 
     public void FadeMe()

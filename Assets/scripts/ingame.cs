@@ -4,11 +4,12 @@ using System.Collections;
 
 public class ingame : MonoBehaviour {
     private float game_score;
+    private float best_score;
 
     public GameObject pattern_obj = null;
 
     public Text text_score;
-    public Text best_score;
+    public Text text_best_score;
     private float pattern1;
     private int pattern2;
     private int pattern34;
@@ -21,6 +22,8 @@ public class ingame : MonoBehaviour {
     public bool isgameover;
 
     public GameObject ui_End;
+    public Text ui_EndText;
+    public GameObject ScoreManager;
 
     void init()
     {
@@ -35,6 +38,7 @@ public class ingame : MonoBehaviour {
         spawning = pattern_obj.gameObject.GetComponent<pattern>();
         spawning.GameOver(false);
         tform = player.GetComponent<Transform>();
+        best_score = ScoreManager.gameObject.GetComponent<scoreManager>().LoadScore();
     }
 
     public void On_Click()
@@ -63,6 +67,15 @@ public class ingame : MonoBehaviour {
         {
             game_score += Time.deltaTime * 1;
             text_score.text = game_score.ToString("#0.00");
+
+            if(best_score > game_score)
+            {
+                text_best_score.text = "BEST : " + best_score.ToString("#0.00");
+            }else
+            {
+                text_best_score.text = "BEST : " + game_score.ToString("#0.00");
+            }
+            
 
             if (pattern1 < game_score)
             {
@@ -96,7 +109,7 @@ public class ingame : MonoBehaviour {
     {
         isgameover = true;
         spawning.GameOver(true);
-        game_score -= Time.deltaTime * 1;
+        ScoreManager.gameObject.GetComponent<scoreManager>().SaveScore(game_score);
         FadeOutMe();
     }
 
@@ -119,8 +132,9 @@ public class ingame : MonoBehaviour {
         }
 
         ui_End.SetActive(true);
+        
         ui_End.gameObject.GetComponent<End>().init();
-
+        ui_EndText.text = game_score.ToString("#0.00");
         gameObject.SetActive(false);
     }
 

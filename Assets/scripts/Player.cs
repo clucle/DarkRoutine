@@ -21,6 +21,7 @@ public class Player : MonoBehaviour {
     public Text text_distance;
     public Text text_score;
     public Text best_score;
+    public Text text_end;
 
     public GameObject ui_Ingame;
     private ingame ingameover;
@@ -60,12 +61,27 @@ public class Player : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
         if (!limit_key && !b_isgameover) {
-            float horizontal = Input.GetAxis("Horizontal");
+            //float horizontal = Input.GetAxis("Horizontal");
+            float horizontal = Input.acceleration.x * 1.4f;
             h_movement(horizontal);
+
+            if (Input.touchCount > 0)
+            {
+                Touch touch = Input.GetTouch(0);
+                switch (touch.phase)
+                {
+                    case TouchPhase.Began:
+                        ChangeColor();
+
+                        break;
+                }
+            }
+
             if (Input.GetKeyDown(KeyCode.Space))
             {
                 ChangeColor();
             }
+            
         }
         if (b_isgameover)
         {
@@ -107,6 +123,7 @@ public class Player : MonoBehaviour {
             text_distance.color = Color.black;
             text_score.color = Color.black;
             best_score.color = Color.black;
+            text_end.color = Color.black;
             isBlack = false;
         }
         else
@@ -116,6 +133,7 @@ public class Player : MonoBehaviour {
             text_distance.color = Color.white;
             text_score.color = Color.white;
             best_score.color = Color.white;
+            text_end.color = Color.white;
             isBlack = true;
         }
     }
@@ -138,12 +156,27 @@ public class Player : MonoBehaviour {
             if (!isBlack) ChangeColor();
             b_isgameover = true;
             ingameover.GameOver();
-            //Debug.Log("A");
-            //ChangeColor();
-            
-            //foreach(GameObject Enem in pre)
         }
-        
     }
+    void OnTriggerStay2D(Collider2D other)
+    {
+        string En_color = "";
+        if (isBlack == true) En_color = "En_black";
+        else if (isBlack == false) En_color = "En_white";
 
+        if (other.gameObject.tag != En_color) // diffent with me and collider
+        {
+            foreach (GameObject wpf in GameObject.FindGameObjectsWithTag("En_white"))
+            {
+                Destroy(wpf);
+            }
+            foreach (GameObject bpf in GameObject.FindGameObjectsWithTag("En_black"))
+            {
+                Destroy(bpf);
+            }
+            if (!isBlack) ChangeColor();
+            b_isgameover = true;
+            ingameover.GameOver();
+        }
+    }
 }

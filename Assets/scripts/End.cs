@@ -1,14 +1,18 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 public class End : MonoBehaviour {
     public GameObject ui_Lobby;
+    public Button Back;
     public void On_Click()
     {
         FadeOutMe();
+        Back.interactable = false;
     }
     public void init()
     {
+        Back.interactable = false;
         FadeInMe();
     }
     public void FadeInMe()
@@ -23,6 +27,7 @@ public class End : MonoBehaviour {
             canvasGroup.alpha += Time.deltaTime * 1;
             yield return null;
         }
+        Back.interactable = true;
     }
 
     public void FadeOutMe()
