@@ -61,8 +61,18 @@ public class Player : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
         if (!limit_key && !b_isgameover) {
-            //float horizontal = Input.GetAxis("Horizontal");
-            float horizontal = Input.acceleration.x * 1.4f;
+            float horizontal = 0;
+            if (Application.platform == RuntimePlatform.Android)
+            {
+                horizontal = Input.acceleration.x * 1.4f;
+            }
+            else
+            {
+                horizontal = Input.GetAxis("Horizontal");
+            }
+
+            
+
             h_movement(horizontal);
 
             if (Input.touchCount > 0)
@@ -155,6 +165,7 @@ public class Player : MonoBehaviour {
             {
                 Destroy(bpf);
             }
+            soundManager.instance.PlayHit();
             if (!isBlack) ChangeColor();
             b_isgameover = true;
             ingameover.GameOver();
@@ -176,6 +187,7 @@ public class Player : MonoBehaviour {
             {
                 Destroy(bpf);
             }
+            soundManager.instance.PlayHit();
             if (!isBlack) ChangeColor();
             b_isgameover = true;
             ingameover.GameOver();

@@ -6,6 +6,7 @@ public class soundManager : MonoBehaviour {
     public AudioClip soundStart;
     public AudioClip soundChange;
     public AudioClip soundGameOver;
+    public AudioClip soundHit;
     // Use this for initialization
     AudioSource asource;
 
@@ -22,8 +23,11 @@ public class soundManager : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-	
-	}
+        if (asource.volume < 1.0f)
+        {
+            asource.volume += 0.01f;
+        }
+    }
     public void PlayStart()
     {
         asource.PlayOneShot(soundStart);
@@ -36,6 +40,11 @@ public class soundManager : MonoBehaviour {
     public void PlayGameOver()
     {
         asource.PlayOneShot(soundGameOver);
+    }
+    public void PlayHit()
+    {
+        asource.volume = 0.2f;
+        asource.PlayOneShot(soundHit);
     }
 }
 
