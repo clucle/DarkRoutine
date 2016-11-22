@@ -9,6 +9,7 @@ public class Lobby : MonoBehaviour {
     public void Button_Click()
     {
         FadeMe();
+        soundManager.instance.PlayStart();
         Start.interactable = false;
     }
 

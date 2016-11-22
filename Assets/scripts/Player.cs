@@ -71,6 +71,7 @@ public class Player : MonoBehaviour {
                 switch (touch.phase)
                 {
                     case TouchPhase.Began:
+                        soundManager.instance.PlayChange();
                         ChangeColor();
 
                         break;
@@ -79,6 +80,7 @@ public class Player : MonoBehaviour {
 
             if (Input.GetKeyDown(KeyCode.Space))
             {
+                soundManager.instance.PlayChange();
                 ChangeColor();
             }
             

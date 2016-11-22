@@ -26,7 +26,7 @@ public class scoreManager : MonoBehaviour {
     uint exitCount = 0;
     void Update()
     {
-        if (Input.GetKeyUp(KeyCode.E))
+        if (Input.GetKeyUp(KeyCode.Escape))
         {
             
             exitCount++;
@@ -36,7 +36,7 @@ public class scoreManager : MonoBehaviour {
                 EndMsg.SetActive(true);
                 FadeIn();
                 
-                Invoke("disableDoubleClick", 0.3f);
+                Invoke("disableDoubleClick", 0.6f);
             }
                 
         }

@@ -8,6 +8,7 @@ public class End : MonoBehaviour {
     public void On_Click()
     {
         FadeOutMe();
+        soundManager.instance.PlayStart();
         Back.interactable = false;
     }
     public void init()

@@ -132,8 +132,8 @@ public class ingame : MonoBehaviour {
         }
 
         ui_End.SetActive(true);
-        
         ui_End.gameObject.GetComponent<End>().init();
+        soundManager.instance.PlayGameOver();
         ui_EndText.text = game_score.ToString("#0.00");
         gameObject.SetActive(false);
     }
