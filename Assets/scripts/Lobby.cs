@@ -5,18 +5,28 @@ using UnityEngine.UI;
 public class Lobby : MonoBehaviour {
     public GameObject ui_Ingame;
     public GameObject player;
-    public Button Start;
+    public Button Start_btn;
+
+    private Player Player;
+    private ingame inGame;
+    private CanvasGroup canvasGroup;
+    public void Start()
+    {
+        canvasGroup = GetComponent<CanvasGroup>();
+        inGame = ui_Ingame.gameObject.GetComponent<ingame>();
+        Player = player.gameObject.GetComponent<Player>();
+    }
     public void Button_Click()
     {
         FadeMe();
         soundManager.instance.PlayStart();
-        Start.interactable = false;
+        Start_btn.interactable = false;
     }
 
     public void init()
     {
         FadeInMe();
-        Start.interactable = false;
+        Start_btn.interactable = false;
     }
     public void FadeInMe()
     {
@@ -24,13 +34,12 @@ public class Lobby : MonoBehaviour {
     }
     IEnumerator DoFadeIn()
     {
-        CanvasGroup canvasGroup = GetComponent<CanvasGroup>();
         while (canvasGroup.alpha < 1)
         {
             canvasGroup.alpha += Time.deltaTime * 1;
             yield return null;
         }
-        Start.interactable = true;
+        Start_btn.interactable = true;
 
     }
 
@@ -40,20 +49,18 @@ public class Lobby : MonoBehaviour {
     }
     IEnumerator DoFade()
     {
-        CanvasGroup canvasGroup = GetComponent<CanvasGroup>();
         while (canvasGroup.alpha > 0)
         {
             canvasGroup.alpha -= Time.deltaTime * 2;
             
             yield return null;
         }
-        yield return null;
-        player.gameObject.GetComponent<Player>().Set_limit_key(false);
-        player.gameObject.GetComponent<Player>().init();
-        ui_Ingame.SetActive(true);
-        ui_Ingame.gameObject.GetComponent<ingame>().On_Click();
-        
 
+        Player.Set_limit_key(false);
+        Player.init();
+        ui_Ingame.SetActive(true);
+        inGame.On_Click();
+        
         gameObject.SetActive(false);
     }
 }

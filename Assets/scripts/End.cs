@@ -5,6 +5,15 @@ using UnityEngine.UI;
 public class End : MonoBehaviour {
     public GameObject ui_Lobby;
     public Button Back;
+
+    private CanvasGroup canvasGroup;
+    private Lobby Lobby;
+
+    public void Start()
+    {
+        Lobby = ui_Lobby.gameObject.GetComponent<Lobby>();
+    }
+
     public void On_Click()
     {
         FadeOutMe();
@@ -13,6 +22,7 @@ public class End : MonoBehaviour {
     }
     public void init()
     {
+        if (canvasGroup == null) canvasGroup = GetComponent<CanvasGroup>();
         Back.interactable = false;
         FadeInMe();
     }
@@ -22,7 +32,6 @@ public class End : MonoBehaviour {
     }
     IEnumerator DoFadeIn()
     {
-        CanvasGroup canvasGroup = GetComponent<CanvasGroup>();
         while (canvasGroup.alpha < 1)
         {
             canvasGroup.alpha += Time.deltaTime * 1;
@@ -37,7 +46,6 @@ public class End : MonoBehaviour {
     }
     IEnumerator DoFadeOut()
     {
-        CanvasGroup canvasGroup = GetComponent<CanvasGroup>();
         while (canvasGroup.alpha > 0)
         {
             canvasGroup.alpha -= Time.deltaTime * 1;
@@ -45,10 +53,10 @@ public class End : MonoBehaviour {
         }
 
         ui_Lobby.SetActive(true);
-        ui_Lobby.gameObject.GetComponent<Lobby>().init();
+        Lobby.init();
         
-
         gameObject.SetActive(false);
     }
 
 }
+

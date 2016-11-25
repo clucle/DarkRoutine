@@ -4,9 +4,10 @@ using System.Collections;
 public class scoreManager : MonoBehaviour {
     public float score;
     public GameObject EndMsg;
+    private CanvasGroup canvasGroup;
     void start()
     {
-
+        canvasGroup = EndMsg.GetComponent<CanvasGroup>();
     }
 
 	public float LoadScore () {
@@ -20,7 +21,6 @@ public class scoreManager : MonoBehaviour {
         {
             PlayerPrefs.SetFloat("scorePrefs", game_score);
         }
-       
 	}
     //if(Application.platform == RuntimePlatform.Android)
     uint exitCount = 0;
@@ -28,14 +28,12 @@ public class scoreManager : MonoBehaviour {
     {
         if (Input.GetKeyUp(KeyCode.Escape))
         {
-            
             exitCount++;
             
             if (!IsInvoking("disableDoubleClick"))
             {
                 EndMsg.SetActive(true);
                 FadeIn();
-                
                 Invoke("disableDoubleClick", 0.6f);
             }
                 
@@ -46,35 +44,29 @@ public class scoreManager : MonoBehaviour {
             Application.Quit();
         }
     }
-
     void disableDoubleClick()
     {
         FadeOut();
         exitCount = 0;
     }
-
-
     public void FadeIn()
     {
         StartCoroutine(DoFadeIn());
     }
     IEnumerator DoFadeIn()
     {
-        CanvasGroup canvasGroup = EndMsg.GetComponent<CanvasGroup>();
         while (canvasGroup.alpha < 1)
         {
             canvasGroup.alpha += Time.deltaTime * 4;
             yield return null;
         }
     }
-
     public void FadeOut()
     {
         StartCoroutine(DoFadeOut());
     }
     IEnumerator DoFadeOut()
     {
-        CanvasGroup canvasGroup = EndMsg.GetComponent<CanvasGroup>();
         while (canvasGroup.alpha > 0)
         {
             canvasGroup.alpha -= Time.deltaTime * 4;
@@ -82,7 +74,4 @@ public class scoreManager : MonoBehaviour {
         }
         EndMsg.SetActive(false);
     }
-
-
 }
-

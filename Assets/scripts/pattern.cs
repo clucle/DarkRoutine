@@ -1,23 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-/*
-// Use this for initialization
-void Start () {
-
-}
-
-// Update is called once per frame
-
-void Update () {
-
-    if (Input.anyKeyDown)
-    {
-        Instantiate(whitePrefab, new Vector3(-2f, 5f, 0), Quaternion.identity);
-        Instantiate(blackPrefab, new Vector3(2f, 5f, 0), Quaternion.identity);
-    }
-}
-*/
 
 public class pattern : MonoBehaviour {
     public GameObject whitePrefab = null;
@@ -29,6 +12,10 @@ public class pattern : MonoBehaviour {
     {
         isgmaeover = isover;
         StopAllCoroutines();
+    }
+    public void GameStart()
+    {
+        isgmaeover = false;
     }
 
     
@@ -59,7 +46,7 @@ public class pattern : MonoBehaviour {
         bool is_black = (check_is_black < 0.5f) ? true : false;
         for (int index = 0; index < 3; index++)
         {
-            SpawnTime(is_black, -1.8f + index * 1.8f, index * 0.6f);
+            SpawnTime(is_black, -1.8f + index * 1.8f, index * 1.0f);
         }
     }
 
@@ -69,7 +56,7 @@ public class pattern : MonoBehaviour {
         bool is_black = (check_is_black < 0.5f) ? true : false;
         for (int index = 0; index < 3; index++)
         {
-            SpawnTime(is_black, +1.8f + -1f * index * 1.8f, index * 0.6f);
+            SpawnTime(is_black, +1.8f + -1f * index * 1.8f, index * 1.0f);
         }
     }
     public void DoPattern5()

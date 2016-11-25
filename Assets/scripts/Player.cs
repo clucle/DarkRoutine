@@ -3,59 +3,73 @@ using UnityEngine.UI;
 using System.Collections;
 
 public class Player : MonoBehaviour {
-    // Character declare
-    private Rigidbody2D rbody;
-    private Transform tform;
-    private float speed;
 
     // Sprite
-    private bool isBlack;//black true white false;
     public Sprite Black_back;
     public Sprite White_back;
     public Sprite Black_ch;
     public Sprite White_ch;
 
+    // Character declare
+    private Rigidbody2D rbody;
+    private Transform tform;
+    private float speed;
 
+    //black true white false;
+    private bool isBlack;
+
+    // Background and Text
     public GameObject background;
-
     public Text text_distance;
     public Text text_score;
     public Text best_score;
     public Text text_end;
 
+    //Renderer
+    private SpriteRenderer BackRender;
+    private SpriteRenderer PlayerRender;
+
     public GameObject ui_Ingame;
     private ingame ingameover;
-    private bool b_isgameover;
+    
 
-    private bool limit_key;
+    private Touch touch;
     private Enem_1 Enem1;
+
+    // gameover -> limit key
+    private bool b_isgameover;
+    private bool limit_key;
+
+    private Vector3 v;
+
     // Use this for initialization
     public void init() {
         b_isgameover = false;
     }
-
-    
     public void Set_limit_key (bool islimit)
     {
-        //Debug.Log(islimit);
-        
         limit_key = islimit;
     }
 
 	void Start () {
-        // Init ch
-        limit_key = true;
         rbody = GetComponent<Rigidbody2D>();
         tform = GetComponent<Transform>();
-        speed = 3;
-        b_isgameover = false;
-        // Init sprite
+
+        PlayerRender = this.gameObject.GetComponent<SpriteRenderer>();
+        PlayerRender.sprite = Black_ch;
+
+        BackRender = background.GetComponent<SpriteRenderer>();
+        BackRender.sprite = Black_back;
+
         isBlack = true;
-        background.GetComponent<SpriteRenderer>().sprite = Black_back;
-        this.gameObject.GetComponent<SpriteRenderer>().sprite = Black_ch;
+
+        speed = 3.0f;
+        v = transform.position;
+
+        b_isgameover = false;
+        limit_key = true;
 
         ingameover = ui_Ingame.gameObject.GetComponent<ingame>();
-
     }
 	
 	// Update is called once per frame
@@ -64,26 +78,22 @@ public class Player : MonoBehaviour {
             float horizontal = 0;
             if (Application.platform == RuntimePlatform.Android)
             {
-                horizontal = Input.acceleration.x * 1.4f;
+                horizontal = Input.acceleration.x * speed;
             }
             else
             {
-                horizontal = Input.GetAxis("Horizontal");
+                horizontal = Input.GetAxis("Horizontal") * speed;
             }
-
-            
-
             h_movement(horizontal);
 
             if (Input.touchCount > 0)
             {
-                Touch touch = Input.GetTouch(0);
+                touch = Input.GetTouch(0);
                 switch (touch.phase)
                 {
                     case TouchPhase.Began:
                         soundManager.instance.PlayChange();
                         ChangeColor();
-
                         break;
                 }
             }
@@ -93,7 +103,6 @@ public class Player : MonoBehaviour {
                 soundManager.instance.PlayChange();
                 ChangeColor();
             }
-            
         }
         if (b_isgameover)
         {
@@ -106,13 +115,11 @@ public class Player : MonoBehaviour {
     {
         if (tform.transform.position.x < -2.23)
         {
-            Vector3 v = transform.position;
             v.x = -2.23f;
             tform.transform.position = v;
         }
         if (tform.transform.position.x > 2.23)
         {
-            Vector3 v = transform.position;
             v.x = 2.23f;
             tform.transform.position = v;
         }
@@ -130,8 +137,8 @@ public class Player : MonoBehaviour {
     {
         if(isBlack == true)
         {
-            background.GetComponent<SpriteRenderer>().sprite = White_back;
-            this.gameObject.GetComponent<SpriteRenderer>().sprite = White_ch;
+            BackRender.sprite = White_back;
+            PlayerRender.sprite = White_ch;
             text_distance.color = Color.black;
             text_score.color = Color.black;
             best_score.color = Color.black;
@@ -140,8 +147,8 @@ public class Player : MonoBehaviour {
         }
         else
         {
-            background.GetComponent<SpriteRenderer>().sprite = Black_back;
-            this.gameObject.GetComponent<SpriteRenderer>().sprite = Black_ch;
+            BackRender.sprite = Black_back;
+            PlayerRender.sprite = Black_ch;
             text_distance.color = Color.white;
             text_score.color = Color.white;
             best_score.color = Color.white;
@@ -151,58 +158,82 @@ public class Player : MonoBehaviour {
     }
     void OnTriggerEnter2D(Collider2D other)
     {
-        
-        string En_color = "";
-        if (isBlack == true) En_color = "En_black";
-        else if(isBlack == false) En_color = "En_white";
-       
-        if (other.gameObject.tag != En_color) // diffent with me and collider
+        if (!b_isgameover)
         {
-            try
-            {
-                Enem1 = GameObject.FindWithTag("En_white").GetComponent<Enem_1>();
-                Enem1.InitSpeed();
-            }
-            catch
-            {
-                Enem1 = GameObject.FindWithTag("En_black").GetComponent<Enem_1>();
-                Enem1.InitSpeed();
-            }
+            string En_color = "";
+            if (isBlack == true) En_color = "En_black";
+            else if (isBlack == false) En_color = "En_white";
 
-            foreach (GameObject wpf in GameObject.FindGameObjectsWithTag("En_white"))
+            if (other.gameObject.tag != En_color) // diffent with me and collider
             {
-                Destroy(wpf);
+                try
+                {
+                    Enem1 = GameObject.FindWithTag("En_white").GetComponent<Enem_1>();
+                    Enem1.InitSpeed();
+                }
+                catch
+                {
+                    Enem1 = GameObject.FindWithTag("En_black").GetComponent<Enem_1>();
+                    Enem1.InitSpeed();
+                }
+
+                
+                foreach (GameObject wpf in GameObject.FindGameObjectsWithTag("En_white"))
+                {
+                    Destroy(wpf);
+                }
+                foreach (GameObject bpf in GameObject.FindGameObjectsWithTag("En_black"))
+                {
+                    Destroy(bpf);
+                }
+                
+                //Destroy(other.gameObject);
+                soundManager.instance.PlayHit();
+                if (!isBlack) ChangeColor();
+                b_isgameover = true;
+                ingameover.GameOver();
             }
-            foreach (GameObject bpf in GameObject.FindGameObjectsWithTag("En_black"))
-            {
-                Destroy(bpf);
-            }
-            soundManager.instance.PlayHit();
-            if (!isBlack) ChangeColor();
-            b_isgameover = true;
-            ingameover.GameOver();
         }
+
     }
     void OnTriggerStay2D(Collider2D other)
     {
-        string En_color = "";
-        if (isBlack == true) En_color = "En_black";
-        else if (isBlack == false) En_color = "En_white";
-
-        if (other.gameObject.tag != En_color) // diffent with me and collider
+        if (!b_isgameover)
         {
-            foreach (GameObject wpf in GameObject.FindGameObjectsWithTag("En_white"))
+            string En_color = "";
+            if (isBlack == true) En_color = "En_black";
+            else if (isBlack == false) En_color = "En_white";
+
+            if (other.gameObject.tag != En_color) // diffent with me and collider
             {
-                Destroy(wpf);
+                try
+                {
+                    Enem1 = GameObject.FindWithTag("En_white").GetComponent<Enem_1>();
+                    Enem1.InitSpeed();
+                }
+                catch
+                {
+                    Enem1 = GameObject.FindWithTag("En_black").GetComponent<Enem_1>();
+                    Enem1.InitSpeed();
+                }
+
+                
+                foreach (GameObject wpf in GameObject.FindGameObjectsWithTag("En_white"))
+                {
+                    Destroy(wpf);
+                }
+                foreach (GameObject bpf in GameObject.FindGameObjectsWithTag("En_black"))
+                {
+                    Destroy(bpf);
+                }
+                
+                //Destroy(other.gameObject);
+                
+                soundManager.instance.PlayHit();
+                if (!isBlack) ChangeColor();
+                b_isgameover = true;
+                ingameover.GameOver();
             }
-            foreach (GameObject bpf in GameObject.FindGameObjectsWithTag("En_black"))
-            {
-                Destroy(bpf);
-            }
-            soundManager.instance.PlayHit();
-            if (!isBlack) ChangeColor();
-            b_isgameover = true;
-            ingameover.GameOver();
         }
     }
 }

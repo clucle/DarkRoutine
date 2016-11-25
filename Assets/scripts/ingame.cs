@@ -3,52 +3,68 @@ using UnityEngine.UI;
 using System.Collections;
 
 public class ingame : MonoBehaviour {
-    private float game_score;
-    private float best_score;
-
     public GameObject pattern_obj = null;
-
     public Text text_score;
     public Text text_best_score;
-    private float pattern1;
-    private float pattern2;
-    private float pattern34;
-    private float pattern56;
-    private pattern spawning;
-
-
     public GameObject player;
-    private Transform tform;
-    public bool isgameover;
-
     public GameObject ui_End;
     public Text ui_EndText;
     public GameObject ScoreManager;
 
-    private Enem_1 Enem1;
-    private float pattern_time;
 
+    private float game_score;
+    private float best_score;
+
+    private float pattern1;
+    private float pattern2;
+    private float pattern34;
+    private float pattern56;
+
+    private float pattern_time;
+    
+    private bool isgameover;
+
+    private Enem_1 Enem1;
+    private Enem_1 Enem2;
+
+    private Transform tform;
+    private pattern spawning;
+    private scoreManager score_manager;
+
+    private CanvasGroup canvasGroup;
+    private End End;
+
+    void Start()
+    {
+        tform = player.GetComponent<Transform>();
+        spawning = pattern_obj.gameObject.GetComponent<pattern>();
+        End = ui_End.gameObject.GetComponent<End>();
+        best_score = score_manager.LoadScore();
+
+    }
     void init()
     {
-        isgameover = false;
-        
         game_score = 0;
+
+        if (canvasGroup == null) canvasGroup = GetComponent<CanvasGroup>();
+        if (score_manager == null) score_manager = ScoreManager.gameObject.GetComponent<scoreManager>();
+
+        best_score = score_manager.LoadScore();
+
         pattern1 = 0.5f; // just random
         pattern2 = 2.4f;
-        
         pattern34 = 5.3f;
         pattern56 = 20;
-        spawning = pattern_obj.gameObject.GetComponent<pattern>();
-        spawning.GameOver(false);
-        tform = player.GetComponent<Transform>();
-        best_score = ScoreManager.gameObject.GetComponent<scoreManager>().LoadScore();
+
         pattern_time = 1;
+        isgameover = false;
     }
 
     public void On_Click()
     {
         init();
         FadeInMe();
+        
     }
     public void FadeInMe()
     {
@@ -56,17 +72,17 @@ public class ingame : MonoBehaviour {
     }
     IEnumerator DoFadeIn()
     {
-        CanvasGroup canvasGroup = GetComponent<CanvasGroup>();
         while (canvasGroup.alpha < 1)
         {
             canvasGroup.alpha += Time.deltaTime * 1;
             yield return null;
         }
+        
 
     }
-
     void Update()
     {
+        if (game_score == 0) spawning.GameStart();
         if (!isgameover)
         {
             game_score += Time.deltaTime * 1;
@@ -86,11 +102,13 @@ public class ingame : MonoBehaviour {
                 pattern1+= pattern_time;
                 spawning.DoPattern1();
 
-
-
-                
-
-
+                pattern1 *= pattern_time;
+                pattern2 *= pattern_time;
+                pattern34 *= pattern_time;
+                if (pattern_time > 0.7f) pattern_time -= 0.005f;
+                pattern1 /= pattern_time;
+                pattern2 /= pattern_time;
+                pattern34 /= pattern_time;
             }
             if (pattern2 * pattern_time < game_score)
             {
@@ -99,15 +117,15 @@ public class ingame : MonoBehaviour {
             }
             if (pattern34 * pattern_time < game_score)
             {
-                pattern34 += 5.3f * pattern_time;
+                pattern34 += 4.9f * pattern_time;
                 float check_is_rand = Random.Range(0.0f, 1.0f);
                 bool is_rand = (check_is_rand < 0.5f) ? true : false;
                 if (is_rand) spawning.DoPattern3();
                 else spawning.DoPattern4();
             }
-            if (pattern56 * pattern_time < game_score)
+            if (pattern56 < game_score)
             {
-                pattern56 += 20 * pattern_time;
+                pattern56 += 20;
                 float check_is_rand = Random.Range(0.0f, 1.0f);
                 bool is_rand = (check_is_rand < 0.5f) ? true : false;
                 if (is_rand) spawning.DoPattern5();
@@ -115,22 +133,13 @@ public class ingame : MonoBehaviour {
                 try
                 {
                     Enem1 = GameObject.FindWithTag("En_white").GetComponent<Enem_1>();
-                    Enem1.UpSpeed(0.2f);
+                    Enem1.UpSpeed(0.3f);
                 }
                 catch
                 {
-                    Enem1 = GameObject.FindWithTag("En_black").GetComponent<Enem_1>();
-                    Enem1.UpSpeed(0.2f);
+                    Enem2 = GameObject.FindWithTag("En_black").GetComponent<Enem_1>();
+                    Enem2.UpSpeed(0.3f);
                 }
-                pattern1 *= pattern_time;
-                pattern2 *= pattern_time;
-                pattern34 *= pattern_time;
-                pattern56 *= pattern_time;
-                if (pattern_time > 0.5f) pattern_time -= 0.02f;
-                pattern1 /= pattern_time;
-                pattern2 /= pattern_time;
-                pattern34 /= pattern_time;
-                pattern56 /= pattern_time;
             }
         }
     }
@@ -138,7 +147,7 @@ public class ingame : MonoBehaviour {
     {
         isgameover = true;
         spawning.GameOver(true);
-        ScoreManager.gameObject.GetComponent<scoreManager>().SaveScore(game_score);
+        score_manager.SaveScore(game_score);
         FadeOutMe();
     }
 
@@ -149,7 +158,6 @@ public class ingame : MonoBehaviour {
     IEnumerator DoFadeOut()
     {
         player.gameObject.GetComponent<Player>().Set_limit_key(true);
-        CanvasGroup canvasGroup = GetComponent<CanvasGroup>();
         while (canvasGroup.alpha > 0)
         {
             Vector3 v = player.transform.position;
@@ -161,7 +169,7 @@ public class ingame : MonoBehaviour {
         }
 
         ui_End.SetActive(true);
-        ui_End.gameObject.GetComponent<End>().init();
+        End.init();
         soundManager.instance.PlayGameOver();
         ui_EndText.text = game_score.ToString("#0.00");
         gameObject.SetActive(false);

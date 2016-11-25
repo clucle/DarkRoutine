@@ -2,7 +2,6 @@
 using System.Collections;
 
 public class soundManager : MonoBehaviour {
-    public AudioClip soundBack;
     public AudioClip soundStart;
     public AudioClip soundChange;
     public AudioClip soundGameOver;

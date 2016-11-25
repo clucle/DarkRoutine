@@ -3,21 +3,23 @@ using System.Collections;
 
 public class Enem_1 : MonoBehaviour {
     private Rigidbody2D rbody;
-    private static float speed = -2f;
-    // Use this for initialization
+    private static float speed = -3f;
 
+    private Transform tform;
+    private Vector3 myrotate;
+    private Vector3 myspeed;
 
     void Start () {
-        //this.gameObject.tag = "En_white";
         rbody = GetComponent<Rigidbody2D>();
+        tform = GetComponent<Transform>();
+        myrotate = new Vector3(0, 0, 1);
+        myspeed = new Vector2(rbody.velocity.x, speed);
     }
 	
-	// Update is called once per frame
 	void Update () {
-
-        rbody.velocity = new Vector2(rbody.velocity.x, speed);
-        this.gameObject.transform.Rotate(new Vector3(0,0,1));
-        if (this.gameObject.transform.position.y < -5)
+        rbody.velocity = myspeed;
+        tform.Rotate(myrotate);
+        if (tform.position.y < -5)
         {
             Destroy(this.gameObject);
         }
@@ -28,11 +30,10 @@ public class Enem_1 : MonoBehaviour {
     }
     public void UpSpeed(float speed_up)
     {
-        speed -= speed_up;
-        Debug.Log(speed);
+        if(speed < -2.0) speed += speed_up;
     }
     public void InitSpeed()
     {
-        if(speed > -10) speed = -2;
+        speed = -3;
     }
 }
