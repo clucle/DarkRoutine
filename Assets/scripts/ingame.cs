@@ -11,9 +11,9 @@ public class ingame : MonoBehaviour {
     public Text text_score;
     public Text text_best_score;
     private float pattern1;
-    private int pattern2;
-    private int pattern34;
-    private int pattern56;
+    private float pattern2;
+    private float pattern34;
+    private float pattern56;
     private pattern spawning;
 
 
@@ -25,20 +25,24 @@ public class ingame : MonoBehaviour {
     public Text ui_EndText;
     public GameObject ScoreManager;
 
+    private Enem_1 Enem1;
+    private float pattern_time;
+
     void init()
     {
         isgameover = false;
         
         game_score = 0;
         pattern1 = 0.5f; // just random
-        pattern2 = 2;
+        pattern2 = 2.4f;
         
-        pattern34 = 5;
+        pattern34 = 5.3f;
         pattern56 = 20;
         spawning = pattern_obj.gameObject.GetComponent<pattern>();
         spawning.GameOver(false);
         tform = player.GetComponent<Transform>();
         best_score = ScoreManager.gameObject.GetComponent<scoreManager>().LoadScore();
+        pattern_time = 1;
     }
 
     public void On_Click()
@@ -77,31 +81,56 @@ public class ingame : MonoBehaviour {
             }
             
 
-            if (pattern1 < game_score)
+            if (pattern1 * pattern_time < game_score)
             {
-                pattern1++;
+                pattern1+= pattern_time;
                 spawning.DoPattern1();
+
+
+
+                
+
+
             }
-            if (pattern2 < game_score)
+            if (pattern2 * pattern_time < game_score)
             {
-                pattern2 += 2;
+                pattern2 += 2.4f * pattern_time;
                 spawning.DoPattern2(0);
             }
-            if (pattern34 < game_score)
+            if (pattern34 * pattern_time < game_score)
             {
-                pattern34 += 5;
+                pattern34 += 5.3f * pattern_time;
                 float check_is_rand = Random.Range(0.0f, 1.0f);
                 bool is_rand = (check_is_rand < 0.5f) ? true : false;
                 if (is_rand) spawning.DoPattern3();
                 else spawning.DoPattern4();
             }
-            if (pattern56 < game_score)
+            if (pattern56 * pattern_time < game_score)
             {
-                pattern56 += 20;
+                pattern56 += 20 * pattern_time;
                 float check_is_rand = Random.Range(0.0f, 1.0f);
                 bool is_rand = (check_is_rand < 0.5f) ? true : false;
                 if (is_rand) spawning.DoPattern5();
                 else spawning.DoPattern6();
+                try
+                {
+                    Enem1 = GameObject.FindWithTag("En_white").GetComponent<Enem_1>();
+                    Enem1.UpSpeed(0.2f);
+                }
+                catch
+                {
+                    Enem1 = GameObject.FindWithTag("En_black").GetComponent<Enem_1>();
+                    Enem1.UpSpeed(0.2f);
+                }
+                pattern1 *= pattern_time;
+                pattern2 *= pattern_time;
+                pattern34 *= pattern_time;
+                pattern56 *= pattern_time;
+                if (pattern_time > 0.5f) pattern_time -= 0.02f;
+                pattern1 /= pattern_time;
+                pattern2 /= pattern_time;
+                pattern34 /= pattern_time;
+                pattern56 /= pattern_time;
             }
         }
     }

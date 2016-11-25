@@ -28,7 +28,7 @@ public class Player : MonoBehaviour {
     private bool b_isgameover;
 
     private bool limit_key;
-
+    private Enem_1 Enem1;
     // Use this for initialization
     public void init() {
         b_isgameover = false;
@@ -151,13 +151,25 @@ public class Player : MonoBehaviour {
     }
     void OnTriggerEnter2D(Collider2D other)
     {
+        
         string En_color = "";
         if (isBlack == true) En_color = "En_black";
         else if(isBlack == false) En_color = "En_white";
        
         if (other.gameObject.tag != En_color) // diffent with me and collider
         {
-            foreach(GameObject wpf in GameObject.FindGameObjectsWithTag("En_white"))
+            try
+            {
+                Enem1 = GameObject.FindWithTag("En_white").GetComponent<Enem_1>();
+                Enem1.InitSpeed();
+            }
+            catch
+            {
+                Enem1 = GameObject.FindWithTag("En_black").GetComponent<Enem_1>();
+                Enem1.InitSpeed();
+            }
+
+            foreach (GameObject wpf in GameObject.FindGameObjectsWithTag("En_white"))
             {
                 Destroy(wpf);
             }
