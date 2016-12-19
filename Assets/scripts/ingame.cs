@@ -115,6 +115,7 @@ public class ingame : MonoBehaviour {
                 pattern2 += 2.4f * pattern_time;
                 spawning.DoPattern2(0);
             }
+            
             if (pattern34 * pattern_time < game_score)
             {
                 pattern34 += 4.9f * pattern_time;
@@ -123,6 +124,7 @@ public class ingame : MonoBehaviour {
                 if (is_rand) spawning.DoPattern3();
                 else spawning.DoPattern4();
             }
+            /*
             if (pattern56 < game_score)
             {
                 pattern56 += 20;
@@ -141,6 +143,7 @@ public class ingame : MonoBehaviour {
                     Enem2.UpSpeed(0.3f);
                 }
             }
+            */
         }
     }
     public void GameOver()

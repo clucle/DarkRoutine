@@ -7,6 +7,7 @@ public class scoreManager : MonoBehaviour {
     private CanvasGroup canvasGroup;
     void start()
     {
+        Application.targetFrameRate = 60;
         canvasGroup = EndMsg.GetComponent<CanvasGroup>();
     }
 
